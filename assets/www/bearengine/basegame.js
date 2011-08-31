@@ -1,15 +1,32 @@
 //define(/*["engine/engine.js"]*/ function(engine) {
 define(function() {	
-		alert('loading basegame');
+		//alert('loading basegame');
 		var BaseGame = Class.extend({
 			init: function(){
-				this.engine = this.onLoadEngine();
+				this._paused = true;
+				this._engine = this.onLoadEngine();	
+				this._renderer = this.onLoadRenderer();
+				this._engine.setRenderer(this._renderer);
+				//this.onSetContentView();
+			
 				this.onLoadResources();
 				var scene = this.onLoadScene();
-				this.engine.onLoadComplete(scene);
+				this._engine.onLoadComplete(scene);
 				this.onLoadComplete();
-				this.engine.start();
+				this._engine.start();
+				alert('engine started');
 			},
+			
+			onLoadRenderer: function(){
+			},
+			/*
+			onSetContentView: function() {
+				this.mRenderSurfaceView = new RenderSurfaceView(this);
+				this.mRenderSurfaceView.setEGLConfigChooser(false);
+				this.mRenderSurfaceView.setRenderer(this.mEngine);
+
+				//this.setContentView(this.mRenderSurfaceView, this.createSurfaceViewLayoutParams());
+			},*/
 
 			onLoadResources: function(){
 			},
@@ -21,7 +38,7 @@ define(function() {
 			},
 
 			getEngine: function(){
-				return this.engine;
+				return this._engine;
 			}
 		});
 		

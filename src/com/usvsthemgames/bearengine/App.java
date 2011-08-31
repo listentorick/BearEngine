@@ -10,8 +10,6 @@ public class App extends DroidGap {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.loadUrl("file:///android_asset/www/bearengine/index.html");
-        
-        
-        
+   
     }
 }

@@ -1,6 +1,6 @@
 define(function() {
 	
-		alert('loading BaseTouchListener');
+		//alert('loading BaseTouchListener');
 
 		var BaseTouchListener = Class.extend({
 			init: function(){		

@@ -1,12 +1,13 @@
-define(["bearengine/input/controller/singletouchcontroller","bearengine/input/singletouchlistener"], function(SingleTouchController, SingleTouchListener) {
-//define(function(SingleTouchController) {
+define([
+		"bearengine/input/controller/singletouchcontroller",
+		"bearengine/input/singletouchlistener"], function(SingleTouchController, SingleTouchListener) {
 
-		alert('loading engine');
+		//alert('loading engine');
 		
 		var Engine = Class.extend({
 			init: function( engineOptions, camera){
 				this.engineOptions = engineOptions;
-				this.camera = camera;
+				this._camera = camera;
 				this.running = false;
 				this.lastTick = -1;
 				this.setTouchListener(new SingleTouchListener());
@@ -18,6 +19,10 @@ define(["bearengine/input/controller/singletouchcontroller","bearengine/input/si
 					self.onTickUpdate();
 				},1);
 	
+			},
+			
+			setRenderer: function(renderer){
+				this._renderer = renderer;
 			},
 			
 			start: function(){
@@ -55,6 +60,7 @@ define(["bearengine/input/controller/singletouchcontroller","bearengine/input/si
 				this.touchController.onUpdate(secondsElapsed);
 				this.updateUpdateHandlers(secondsElapsed);
 				this.onUpdateScene(secondsElapsed);
+				
 			},
 			
 			updateUpdateHandlers: function(secondsElapsed) {
@@ -65,12 +71,12 @@ define(["bearengine/input/controller/singletouchcontroller","bearengine/input/si
 					this.updateHandlers[i].onUpdate(secondsElapsed);
 				}
 
-				this.camera.onUpdate(secondsElapsed);
+				this._camera.onUpdate(secondsElapsed);
 			},
 			
 			onUpdateScene: function(secondsElapsed) {
-				if(this.scene != null) {
-					this.scene.onUpdate(pSecondsElapsed);
+				if(this._scene != null) {
+					this._scene.onUpdate(secondsElapsed);
 				}
 			},
 			
@@ -78,7 +84,9 @@ define(["bearengine/input/controller/singletouchcontroller","bearengine/input/si
 				if(this.running) {
 					var secondsElapsed = this.getMilliSecondsElapsed();
 					this.onUpdate(secondsElapsed);
-					//this.yieldDraw();
+					//now render the changes...
+					//may look at reducing the rendering calls...
+					this.onDrawFrame(this._renderer);
 				} else {
 					//this.yieldDraw();
 				}
@@ -114,7 +122,23 @@ define(["bearengine/input/controller/singletouchcontroller","bearengine/input/si
 			},
 			
 			onLoadComplete: function(scene) {
-				this.scene = scene;
+				this._scene = scene;
+			},
+			
+			onDrawFrame: function(renderer){
+
+				//this.mTextureManager.updateTextures(pGL);
+				//this.mFontManager.updateFonts(pGL);
+				//if(GLHelper.EXTENSIONS_VERTEXBUFFEROBJECTS) {
+				//	this.mBufferObjectManager.updateBufferObjects((GL11) pGL);
+				//}
+
+				this.onDrawScene(renderer);
+
+			},
+
+			onDrawScene: function(renderer) {
+				this._scene.onDraw(renderer, this._camera);
 			}
 
 			
