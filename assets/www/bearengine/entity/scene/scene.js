@@ -129,21 +129,21 @@ define([
 			// ===========================================================
 
 			
-			onManagedDraw: function(GL,camera) {
+			onManagedDraw: function(renderer,camera) {
 				var childScene = this._childScene;
 
 				if(childScene == null || !this._childSceneModalDraw) {
 					if(this._backgroundEnabled) {
-						camera.onApplyPositionIndependentMatrix(GL);
-						GLHelper.setModelViewIdentityMatrix(GL);
+						camera.onApplyPositionIndependentMatrix(renderer); //we dont care about the position of the camera here
+						//GLHelper.setModelViewIdentityMatrix(renderer);
 
-						this._background.onDraw(pGL, pCamera);
+						this._background.onDraw(renderer, camera);
 					}
 
-					camera.onApplyMatrix(GL);
-					GLHelper.setModelViewIdentityMatrix(GL);
+					camera.onApplyMatrix(renderer);//the position/rotation etc of the camera matters here
+					//GLHelper.setModelViewIdentityMatrix(renderer);
 					
-					this._super(GL, camera);
+					this._super(renderer, camera);
 					//super.onManagedDraw(GL, camera);
 				}
 

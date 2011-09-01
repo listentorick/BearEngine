@@ -6,11 +6,26 @@ define(["bearengine/util/transformation"], function(Transformation) {
 		var Entity = Class.extend({
 
 			init: function(x,y){
+				
 				this._initialX = x;
 				this._initialY = y;
+				
 				this._x = x;
 				this._y = y;
+				
 				this._visible = true;
+				
+				this._rotation = 0;
+
+				this._rotationCenterX = 0;
+				this._rotationCenterY = 0;
+
+				this._scaleX = 1;
+				this._scaleY = 1;
+
+				this._scaleCenterX = 0;
+				this._scaleCenterY = 0;
+
 			},
 			
 			getParent: function() {
@@ -496,10 +511,10 @@ define(["bearengine/util/transformation"], function(Transformation) {
 			// Methods
 			// ===========================================================
 
-			/*
-			protected void doDraw(final GL10 pGL, final Camera pCamera) {
+			
+			doDraw: function(renderer, camera) {
 
-			}*/
+			},
 
 			allocateEntityModifiers: function() {
 				this._entityModifiers = [];
@@ -513,31 +528,37 @@ define(["bearengine/util/transformation"], function(Transformation) {
 				this._updateHandlers = [];
 			},
 
-			onApplyTransformations: function(GL) {
+			onApplyTransformations: function(renderer) {
 				/* Translation. */
-				this.applyTranslation(GL);
+				this.applyTranslation(renderer);
 
 				/* Rotation. */
-				this.applyRotation(GL);
+				this.applyRotation(renderer);
 
 				/* Scale. */
-				this.applyScale(GL);
+				this.applyScale(renderer);
 			},
 
-			applyTranslation: function(GL) {
-				GL.glTranslatef(this._x, this._y, 0);
+			applyTranslation: function(renderer) {
+				renderer.translate(this._x,this._y);
+				//GL.glTranslatef(this._x, this._y, 0);
 			},
 
-			applyRotation: function(GL) {
+			applyRotation: function(renderer) {
 				var rotation = this._rotation;
 
 				if(rotation != 0) {
 					var rotationCenterX = this._rotationCenterX;
 					var rotationCenterY = this._rotationCenterY;
+					
+					renderer.translate(rotationCenterX,rotationCenterY);
+					renderer.rotate(rotation);
+					renderer.translate(-rotationCenterX,-rotationCenterY);
 
+					/*
 					pGL.glTranslatef(rotationCenterX, rotationCenterY, 0);
 					pGL.glRotatef(rotation, 0, 0, 1);
-					pGL.glTranslatef(-rotationCenterX, -rotationCenterY, 0);
+					pGL.glTranslatef(-rotationCenterX, -rotationCenterY, 0);*/
 
 					/* TODO There is a special, but very likely case when mRotationCenter and mScaleCenter are the same.
 					 * In that case the last glTranslatef of the rotation and the first glTranslatef of the scale is superfluous.
@@ -552,14 +573,19 @@ define(["bearengine/util/transformation"], function(Transformation) {
 				if(scaleX != 1 || scaleY != 1) {
 					var scaleCenterX = this._scaleCenterX;
 					var scaleCenterY = this._scaleCenterY;
-
-					GL.glTranslatef(scaleCenterX, scaleCenterY, 0);
-					GL.glScalef(scaleX, scaleY, 1);
-					GL.glTranslatef(-scaleCenterX, -scaleCenterY, 0);
+					renderer.translate(scaleCenterX,scaleCenterY);
+					renderer.scale(scaleX,scaleY);
+					renderer.translate(-scaleCenterX,-scaleCenterY);
+					
+					//GL.glTranslatef(scaleCenterX, scaleCenterY, 0);
+					//GL.glScalef(scaleX, scaleY, 1);
+					//GL.glTranslatef(-scaleCenterX, -scaleCenterY, 0);
 				}
 			},
 
-			onManagedDraw: function(GL, camera) {
+			onManagedDraw: function(renderer, camera) {
+				
+				/*
 				pGL.glPushMatrix();
 				{
 					this.onApplyTransformations(GL);
@@ -574,7 +600,25 @@ define(["bearengine/util/transformation"], function(Transformation) {
 						}
 					}
 				}
-				GL.glPopMatrix();
+				GL.glPopMatrix();*/
+				renderer.begin();
+				
+					this.onApplyTransformations(renderer);
+
+					this.doDraw(renderer, camera);
+
+					if(this._children != null) {
+						var entities = this._children;
+						var entityCount = entities.size();
+						for(var i = 0; i < entityCount; i++) {
+							entities.get(i).onDraw(renderer, camera);
+						}
+					}
+				
+				
+				renderer.end();
+				
+				
 			},
 
 			onManagedUpdate: function(secondsElapsed) {

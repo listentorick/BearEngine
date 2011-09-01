@@ -2,13 +2,11 @@ define([
 		"bearengine/input/controller/singletouchcontroller",
 		"bearengine/input/singletouchlistener"], function(SingleTouchController, SingleTouchListener) {
 
-		//alert('loading engine');
-		
 		var Engine = Class.extend({
 			init: function( engineOptions, camera){
 				this.engineOptions = engineOptions;
 				this._camera = camera;
-				this.running = false;
+				this._running = false;
 				this.lastTick = -1;
 				this.setTouchListener(new SingleTouchListener());
 				this.setTouchController(new SingleTouchController());	
@@ -26,15 +24,15 @@ define([
 			},
 			
 			start: function(){
-				if(!this.running) {
+				if(!this._running) {
 					this.lastTick = new Date().getMilliseconds();
-					this.running = true;
+					this._running = true;
 				}
 			},
 			
 			stop: function(){
-				if(this.running) {
-					this.running = false;
+				if(this._running) {
+					this._running = false;
 				}
 			},
 
@@ -81,7 +79,7 @@ define([
 			},
 			
 			onTickUpdate: function() {
-				if(this.running) {
+				if(this._running) {
 					var secondsElapsed = this.getMilliSecondsElapsed();
 					this.onUpdate(secondsElapsed);
 					//now render the changes...
