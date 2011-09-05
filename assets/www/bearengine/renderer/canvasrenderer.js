@@ -20,6 +20,16 @@ define(function() {
 			
 			},
 			
+			_vertices: [],
+			
+			setColor: function(r,g,b,a){
+			
+			},
+			
+			selectVertices: function(vertices){
+				this._vertices = vertices;
+			},
+			
 			begin: function(){
 				this._drawingContext.save();
 			
@@ -27,6 +37,9 @@ define(function() {
 			
 			end: function(){
 				this._drawingContext.restore();
+			},
+			
+			drawTriangleStrip: function(){
 			}
 			
 		

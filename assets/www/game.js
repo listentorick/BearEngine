@@ -2,11 +2,11 @@ define( [	"bearengine/basegame",
 			"bearengine/engine/engine", 
 			"bearengine/engine/camera/camera",
 			"bearengine/entity/scene/scene",
-			"bearengine/renderer/canvasrenderer"
+			"bearengine/renderer/canvasrenderer",
+			"bearengine/entity/primitive/rectangle"
 			], 
-			function(BaseGame, Engine, Camera, Scene, CanvasRenderer) {
+			function(BaseGame, Engine, Camera, Scene, CanvasRenderer, Rectangle) {
 			
-	//alert('loading gamey!');
 		var Game = BaseGame.extend({
 
 			init: function(){
@@ -30,6 +30,11 @@ define( [	"bearengine/basegame",
 			},
 			
 			onLoadComplete: function(){
+				alert('onloadcomplete');
+				var rectangle = new Rectangle(20,20,100,100);
+				rectangle.setColor(1,0,0,1);
+				var scene = this.getEngine().getScene();
+				scene.attachChild(rectangle);
 			}
 
 		});

@@ -223,7 +223,7 @@ define(["bearengine/util/transformation"], function(Transformation) {
 					this.allocateChildren();
 				}
 
-				this._children.add(entity);
+				this._children.push(entity);
 				entity.setParent(this);
 				entity.onAttached();
 			},
@@ -609,9 +609,9 @@ define(["bearengine/util/transformation"], function(Transformation) {
 
 					if(this._children != null) {
 						var entities = this._children;
-						var entityCount = entities.size();
+						var entityCount = entities.length;
 						for(var i = 0; i < entityCount; i++) {
-							entities.get(i).onDraw(renderer, camera);
+							entities[i].onDraw(renderer, camera);
 						}
 					}
 				
@@ -631,9 +631,9 @@ define(["bearengine/util/transformation"], function(Transformation) {
 
 				if(this._children != null) {
 					var entities = this._children;
-					var entityCount = entities.size();
+					var entityCount = entities.length;
 					for(var i = 0; i < entityCount; i++) {
-						entities.get(i).onUpdate(pSecondsElapsed);
+						entities[i].onUpdate(secondsElapsed);
 					}
 				}
 			}

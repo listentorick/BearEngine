@@ -36,6 +36,18 @@ define([
 				}
 			},
 
+			getScene: function() {
+				return this._scene;
+			},
+			
+			setScene: function(scene) {
+				this._scene = scene;
+			},
+			
+			getCamera: function() {
+				return this._camera;
+			},
+			
 			getMilliSecondsElapsed: function() {
 				var now = new Date().getMilliseconds();
 				return this.calculateMilliSecondsElapsed(now, this.lastTick);
